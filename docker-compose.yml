@@ -1,0 +1,34 @@
+networks:
+  edgex-network:
+    driver: bridge
+services:
+  vault:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command:
+    - server
+    container_name: edgex-vault
+    environment:
+      SKIP_SETCAP: "true"
+      VAULT_ADDR: http://edgex-vault:8200
+      VAULT_CONFIG_DIR: /vault/config
+      VAULT_DISABLE_MLOCK: "true"
+      VAULT_UI: "true"
+    hostname: edgex-vault
+    networks:
+      edgex-network: {}
+    ports:
+    - 127.0.0.1:8200:8200/tcp
+    restart: always
+    tmpfs:
+    - /vault/logs
+    user: root:root
+    volumes:
+    - vault-config:/vault/config
+    - vault-file:/vault/file
+    - ./config.hcl:/vault/config/config.hcl
+version: '3.7'
+volumes:
+  vault-config: {}
+  vault-file: {}

@@ -1,0 +1,50 @@
+External JTW Signers are used to validate JWTs for authentication. This validation requires the following:
+
+    the iss field on the JWT must match the issuer field on the External JWT Signer
+     -- easy: /v1/identiy/oidc
+    the aud field on the JWT must match the audience field on the External JWT Signer
+     -- According to https://developer.hashicorp.com/vault/docs/secrets/identity/identity-token
+     -- aud = client_id of associated role (this is settable)
+    the sub or field defined by claimsProperty must match the id field on an identity (or externalid if useExternal is true)
+     -- This is the id of the associated Vault Entity (but is internal to Vault and cannot be changed)
+     -- Instead, store the identity name in the OIDC standard "name" claim and use that.
+    the JWT must be signed by the x509 certificate or a JWK from the JWKS endpoint defined on the External JWT Signer
+     -- See .well_known/keys
+    the JWT kid must match the External JWT kid field for x509 certificates or the kid in a JWKS response
+     -- Yes, compliant
+    the JWT must not be expired
+     -- Yes, compliant
+
+cat svc1.claims.txt
+{
+  "aud": "a6X6adlCXINZqwy7ZrqmSKuNSr",
+  "custom": "value",
+  "exp": 1673568142,
+  "iat": 1673481742,
+  "iss": "/v1/identity/oidc",
+  "namespace": "root",
+  "sub": "eb2e6438-91b2-96a3-543b-2fdf23838804"
+}
+
+cat svc2.claims.txt
+{
+  "aud": "iGnNxt4sl1RRaeCHRPk1DQnhjn",
+  "custom": "value",
+  "exp": 1673568143,
+  "iat": 1673481743,
+  "iss": "/v1/identity/oidc",
+  "namespace": "root",
+  "sub": "237ddcab-22d8-b468-d00a-669998c4eb41"
+}
+
+cat svc3_claims.txt
+{
+  "aud": "jcBISVDMjt9z4uoh0frWWZw9C0",
+  "custom": "value",
+  "exp": 1673568143,
+  "iat": 1673481743,
+  "iss": "/v1/identity/oidc",
+  "namespace": "root",
+  "sub": "716e94b0-6e09-f06d-aef8-175365250620"
+}
+
